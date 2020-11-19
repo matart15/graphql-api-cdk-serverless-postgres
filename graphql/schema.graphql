@@ -28,10 +28,7 @@ type Mutation {
 }
 
 type Subscription {
-  onCreatePost: Post
-    @aws_subscribe(mutations: ["createPost"])
-  onUpdatePost: Post
-    @aws_subscribe(mutations: ["updatePost"])
-  onDeletePost: Post
-    @aws_subscribe(mutations: ["deletePost"])
+  onCreatePost: Post @aws_subscribe(mutations: ["createPost"])
+  onUpdatePost: Post @aws_subscribe(mutations: ["updatePost"])
+  onDeletePost: Post @aws_subscribe(mutations: ["deletePost"])
 }
