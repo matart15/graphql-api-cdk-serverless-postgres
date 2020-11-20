@@ -49,11 +49,6 @@ export class AppsyncCdkRdsStack extends cdk.Stack {
       allowAllOutbound: true,
       securityGroupName: 'public-sg',
     })
-    publicSg.addIngressRule(
-      ec2.Peer.anyIpv4(),
-      ec2.Port.tcp(22),
-      'Bastion Host SSH connection'
-    )
 
     const privateSg = new ec2.SecurityGroup(this, 'private-sg', {
       vpc,
@@ -106,11 +101,10 @@ export class AppsyncCdkRdsStack extends cdk.Stack {
       code: new lambda.AssetCode('lambda-fns'),
       handler: 'index.handler',
       memorySize: 1024,
-      timeout: cdk.Duration.seconds(10),
+      timeout: cdk.Duration.seconds(5),
       environment: {
         DB_URL: this.node.tryGetContext('dbURL') || '',
         // AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
-        DEBUG: '*',
       },
     })
     // Grant access to the cluster from the Lambda function

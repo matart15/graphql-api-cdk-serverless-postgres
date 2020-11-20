@@ -1,6 +1,6 @@
 -- Create a new table
-CREATE TABLE posts (
- id text UNIQUE,
+create table posts (
+ id text primary key,
  title text,
  content text
 );
@@ -15,4 +15,4 @@ CREATE TABLE posts (
 --UPDATE posts SET title = 'Updated title', content = 'Updated content'  where id = '001'
 
 -- Query all items
--- select * from posts
+select * from posts;
