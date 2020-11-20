@@ -8,16 +8,17 @@
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
-    "cdk": "dotenv -- cdk",
+    "cdk": "cdk",
+    "prediff": "yarn build",
+    "diff": "yarn cdk diff --profile prisma_demo",
     "predeploy": "yarn build",
-    "deploy": "yarn cdk deploy -O cdk-exports.json"
+    "deploy": "yarn cdk deploy -O ../cdk-exports.json --profile prisma_demo"
   },
   "devDependencies": {
     "@aws-cdk/assert": "1.74.0",
     "@types/jest": "^26.0.10",
     "@types/node": "14.14.9",
     "aws-cdk": "1.74.0",
-    "dotenv-cli": "^4.0.0",
     "husky": ">=4",
     "jest": "^26.4.2",
     "lint-staged": ">=10",

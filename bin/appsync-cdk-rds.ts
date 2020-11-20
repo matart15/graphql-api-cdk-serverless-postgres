@@ -5,5 +5,8 @@ import { AppsyncCdkRdsStack } from '../lib/appsync-cdk-rds-stack'
 
 const app = new cdk.App()
 new AppsyncCdkRdsStack(app, 'AppsyncCdkRdsStack', {
-  env: { region: process.env.REGION, account: process.env.AWS_ACCOUNT_ID },
+  env: {
+    region: app.node.tryGetContext('region'),
+    account: app.node.tryGetContext('accountID'),
+  },
 })

@@ -1,18 +1,14 @@
-import Post from './Post';
-import db from './db';
-const { v4: uuid } = require('uuid');
+import Post from './Post'
+import { db, uuidv4 } from './db'
 
 async function createPost(post: Post) {
-    if (!post.id) post.id = uuid();
-    const { id, title, content } = post;
-    try {
-        const query = `INSERT INTO posts (id,title,content) VALUES(:id,:title,:content)`;
-        await db.query(query, { id, title, content });
-        return post;
-    } catch (err) {
-        console.log('Postgres error: ', err);
-        return null;
-    }
+  if (!post.id) post.id = uuidv4()
+  try {
+    return await db.post.create({ data: post })
+  } catch (err) {
+    console.log('Postgres error: ', err)
+    return null
+  }
 }
 
-export default createPost;
+export default createPost

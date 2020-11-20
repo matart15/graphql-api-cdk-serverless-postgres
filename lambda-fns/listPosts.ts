@@ -1,13 +1,13 @@
-import db from './db';
+import { db } from './db'
 
 async function listPosts() {
-    try {
-        const result = await db.query(`SELECT * FROM posts`);
-        return result.records;
-    } catch (err) {
-        console.log('Postgres error: ', err);
-        return null;
-    }
+  try {
+    console.log('[list posts resolver]')
+    return await db.post.findMany()
+  } catch (err) {
+    console.log('Postgres error: ', err)
+    return null
+  }
 }
 
-export default listPosts;
+export default listPosts

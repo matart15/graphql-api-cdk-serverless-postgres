@@ -1,7 +1,11 @@
-const db = require('data-api-client')({
-  secretArn: process.env.SECRET_ARN,
-  resourceArn: process.env.CLUSTER_ARN,
-  database: process.env.DB_NAME
-});
+import { PrismaClient } from '@prisma/client'
 
-export default db;
+export const db = new PrismaClient()
+
+export const uuidv4 = () => {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+    let r = (Math.random() * 16) | 0
+    let v = c === 'x' ? r : (r & 0x3) | 0x8
+    return v.toString(16)
+  })
+}
