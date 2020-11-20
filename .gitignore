@@ -5,6 +5,7 @@ lib/*.js
 node_modules
 
 cdk-exports.json
+cdk.context.json
 
 # CDK asset staging directory
 .cdk.staging
@@ -12,3 +13,4 @@ cdk.out
 
 # Parcel default cache directory
 .parcel-cache
+.env
