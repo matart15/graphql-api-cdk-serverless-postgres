@@ -46,13 +46,11 @@ export class AppsyncCdkRdsStack extends cdk.Stack {
     // Create the required security groups
     const publicSg = new ec2.SecurityGroup(this, 'public-sg', {
       vpc,
-      allowAllOutbound: true,
       securityGroupName: 'public-sg',
     })
 
     const privateSg = new ec2.SecurityGroup(this, 'private-sg', {
       vpc,
-      allowAllOutbound: true,
       securityGroupName: 'private-sg',
     })
     privateSg.addIngressRule(
@@ -69,10 +67,10 @@ export class AppsyncCdkRdsStack extends cdk.Stack {
     // RDS Subnet Group
     const subnetGroup = new rds.SubnetGroup(this, 'rds-subnet-group', {
       vpc,
-      subnetGroupName: 'rds-subnet-group',
-      vpcSubnets: vpc.selectSubnets({ subnetType: ec2.SubnetType.ISOLATED }),
+      subnetGroupName: 'aurora-subnet-group',
+      vpcSubnets: { subnetType: ec2.SubnetType.ISOLATED },
       removalPolicy: cdk.RemovalPolicy.DESTROY,
-      description: 'An all private subnets group',
+      description: 'An all private subnets group for the DB',
     })
 
     // Create the Serverless Aurora DB cluster; set the engine to Postgres
@@ -94,9 +92,8 @@ export class AppsyncCdkRdsStack extends cdk.Stack {
     // Create the Lambda function that will map GraphQL operations into Postgres
     const postFn = new lambda.Function(this, 'MyFunction', {
       vpc,
-      vpcSubnets: vpc.selectSubnets({ subnetType: ec2.SubnetType.PUBLIC }),
-      securityGroups: [publicSg],
-      allowPublicSubnet: true,
+      vpcSubnets: { subnetType: ec2.SubnetType.ISOLATED },
+      securityGroups: [privateSg],
       runtime: lambda.Runtime.NODEJS_12_X,
       code: new lambda.AssetCode('lambda-fns'),
       handler: 'index.handler',
@@ -108,7 +105,7 @@ export class AppsyncCdkRdsStack extends cdk.Stack {
       },
     })
     // Grant access to the cluster from the Lambda function
-    cluster.grantDataApiAccess(postFn)
+    // cluster.grantDataApiAccess(postFn)
     // Set the new Lambda function as a data source for the AppSync API
     const lambdaDs = api.addLambdaDataSource('lambdaDatasource', postFn)
 
@@ -118,6 +115,9 @@ export class AppsyncCdkRdsStack extends cdk.Stack {
     }
 
     // CFN Outputs
+    new cdk.CfnOutput(this, 'ClusterHost', {
+      value: cluster.clusterEndpoint.hostname,
+    })
     new cdk.CfnOutput(this, 'AppSyncAPIURL', {
       value: api.graphqlUrl,
     })
