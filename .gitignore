@@ -1,5 +1,4 @@
-lambda-fns/*.js
-lib/*.js
+*.js
 !jest.config.js
 *.d.ts
 node_modules

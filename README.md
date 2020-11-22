@@ -1,6 +1,6 @@
 # CDK API with GraphQL and Aurora Serverless PostgreSQL
 
-This CDK stack deploys a real-time GraphQL API built with AWS AppSync, Amazon Aurora Serverless PostgreSQL, and AWS Lambda.
+This CDK stack deploys a real-time GraphQL API built with AWS AppSync, Amazon Aurora Serverless PostgreSQL, AWS Lambda, and [Prisma](https://www.prisma.io/).
 
 ![CDK API with GraphQL and Aurora Serverless PostgreSQL](header.jpg)
 
@@ -11,70 +11,91 @@ To deploy this project, follow these steps.
 1. Clone the project
 
 ```sh
-git clone https://github.com/dabit3/graphql-api-cdk-serverless-postgres.git
+git clone https://github.com/ryands17/graphql-api-cdk-serverless-postgres.git
 ```
 
 2. Change into the new directory and install dependencies
 
 ```sh
 cd graphql-api-cdk-serverless-postgres
-
-npm install
+yarn
 ```
 
-3. Change into the __lambda-fns__ directory and install the dependencies for the Lambda function package:
+3. Change into the **lambda-fns** directory and install the dependencies for the Lambda function package:
 
 ```sh
 cd lambda-fns
-npm install
+yarn
 cd ..
 ```
 
-4. Run the build
+4. Initialize `cdk.context.json` in the root directory with the following values (The account ID should match the one you're deploying to)
 
-```sh
-npm run build
+```json
+{
+  "region": "us-east-1",
+  "accountID": "123456789012",
+  "dbURL": ""
+}
 ```
 
 5. Deploy the stack
 
+\***\*Note\*\***: I have deployed using an AWS Profile named `prisma_demo`. To use your own profile, replace the `profile` in the `deploy` command under `scripts` in `package.json`. Learn more about how to create an AWS profile [here(https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html).
+
 ```sh
-cdk deploy --O cdk-exports.json
+yarn deploy
 ```
 
 6. Create the posts table
 
-Visit the [RDS dashboard](https://console.aws.amazon.com/rds/home) and click on __Query Editor__. From the dropdown menu, choose the database (it should begin with __appsynccdkrdsstack-aurorablogcluster__).
+Visit the [RDS dashboard](https://console.aws.amazon.com/rds/home) and click on **Query Editor**. From the dropdown menu, choose the database (it should begin with **appsynccdkrdsstack-aurorablogcluster**).
 
-For the Database username, choose __Connect with a Secrets Manager ARN__.
+For the Database username, choose **Connect with a Secrets Manager ARN**.
 
-To sign in, you will need the ARN from the secret that was created by CDK. To get this secret, in a new window open [AWS Secrets manager](https://console.aws.amazon.com/secretsmanager/home). Here, click on the secret that was created by CDK (it should start with __AuroraBlogClusterSecret__). Copy the Secret ARN to your clipboard and go back to the RDS Query Editor.
+To sign in, you will need the ARN from the secret that was created by CDK. To get this secret, in a new window open [AWS Secrets manager](https://console.aws.amazon.com/secretsmanager/home). Here, click on the secret that was created by CDK (it should start with **AuroraBlogClusterSecret**). Copy the Secret ARN to your clipboard and go back to the RDS Query Editor.
 
-Next, use the __Secret ARN__ as the __Secrets Manager ARN__ and __BlogDB__ as the name of the database. Next, press enter and click on Connect to Database.
+Next, use the **Secret ARN** as the **Secrets Manager ARN** and **BlogDB** as the name of the database. Next, press enter and click on Connect to Database.
 
-Once signed in, create the __posts__ table by executing the following query:
+Once signed in, create the **posts** table by executing the following query:
 
 ```sql
-CREATE TABLE posts (
- id text UNIQUE,
+create table posts (
+ id text primary key,
  title text,
  content text
 );
 ```
 
-7. Testing the API
+7. Update the `dbURL` parameter in `cdk.context.json` with the one found in Secrets manager
 
-Next, visit the [AppSync console](https://console.aws.amazon.com/appsync/home) and click on __cdk-blog-appsync-api__ to view the dashboard for your API.
+```json
+{
+  "dbURL": "postgresql://postgres:password@aurora-serverless-host:5432/BlogDB?connection_limit=1"
+}
+```
 
-Next click on __Queries__ in the left hand menu to view the query editor. From here, we can test out the API by running the following queries and mutations:
+You can retrieve the _HOST_ and _PASSWORD_ from the Secrets manager for this secret in the section below.
+
+![Retrieve the secret from Secrets Manager](retrieve-secret.png)
+
+8. Deploy the stack again to reflect the URL
+
+```
+yarn deploy
+```
+
+8. Testing the API
+
+Next, visit the [AppSync console](https://console.aws.amazon.com/appsync/home) and click on **cdk-blog-appsync-api** to view the dashboard for your API.
+
+Next click on **Queries** in the left hand menu to view the query editor. From here, we can test out the API by running the following queries and mutations:
 
 ```graphql
 mutation createPost {
-  createPost(post: {
-    id: "001"
-    title: "My first post!"
-    content: "Hello world!"
-  }) {
+  createPost(
+    post: { id: "001", title: "My first post!", content: "Hello world!" }
+  ) {
     id
     title
     content
@@ -98,10 +119,7 @@ query getPostById {
 }
 
 mutation updatePost {
-  updatePost(post: {
-    id: "001"
-    title: "My updated post!"
-  }) {
+  updatePost(post: { id: "001", title: "My updated post!" }) {
     id
     title
   }
