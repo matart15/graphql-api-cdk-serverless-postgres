@@ -1,5 +1,13 @@
 # CDK API with GraphQL and Aurora Serverless PostgreSQL
 
+## Note: This stack will not come under the free tier. To delete all resources after you're done, use the following command:
+
+```sh
+yarn cdk destroy --profile profileName
+```
+
+Where the `profileName` is your AWS profile name. I have used `prisma_demo` here but you can replace that with any profile.
+
 This CDK stack deploys a real-time GraphQL API built with AWS AppSync, Amazon Aurora Serverless PostgreSQL, AWS Lambda, and [Prisma](https://www.prisma.io/).
 
 ![CDK API with GraphQL and Aurora Serverless PostgreSQL](header.jpg)
