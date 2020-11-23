@@ -23,7 +23,7 @@ type Query {
 
 type Mutation {
   createPost(post: CreatePostInput!): Post
-  deletePost(postId: String!): String
+  deletePost(postId: String!): Post
   updatePost(post: UpdatePostInput!): Post
 }
 

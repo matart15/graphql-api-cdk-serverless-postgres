@@ -1,3 +1,4 @@
+import './db'
 import createPost from './createPost'
 import listPosts from './listPosts'
 import updatePost from './updatePost'
@@ -15,7 +16,9 @@ type AppSyncEvent = {
   }
 }
 
-exports.handler = async (event: AppSyncEvent) => {
+exports.handler = async (event: AppSyncEvent, context: any) => {
+  context.callbackWaitsForEmptyEventLoop = false
+
   switch (event.info.fieldName) {
     case 'createPost':
       return await createPost(event.arguments.post)
