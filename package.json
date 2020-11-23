@@ -12,7 +12,7 @@
     "prediff": "yarn build",
     "diff": "yarn cdk diff --profile prisma_demo",
     "predeploy": "yarn build",
-    "deploy": "yarn cdk deploy -O ../cdk-exports.json --profile prisma_demo"
+    "deploy": "yarn cdk deploy -O ./cdk-exports.json --profile prisma_demo"
   },
   "devDependencies": {
     "@aws-cdk/assert": "1.74.0",
