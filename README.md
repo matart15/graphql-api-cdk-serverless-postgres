@@ -48,7 +48,13 @@ cd ..
 
 5. Deploy the stack
 
-\***\*Note\*\***: I have deployed using an AWS Profile named `prisma_demo`. To use your own profile, replace the `profile` in the `deploy` command under `scripts` in `package.json`. Learn more about how to create an AWS profile [here(https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html).
+\***\*Note\*\***: I have deployed using an AWS Profile named `default`. To use your own profile, add the `profile` option after the deploy command like this:
+
+```
+yarn deploy --profile profile_name
+```
+
+Learn more about how to create an AWS profile [here(https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html).
 
 ```sh
 yarn deploy
