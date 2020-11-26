@@ -1,7 +1,8 @@
 import Post from './Post'
-import { db, uuidv4 } from './db'
+import { getDB, uuidv4 } from './db'
 
 async function createPost(post: Post) {
+  const db = await getDB()
   if (!post.id) post.id = uuidv4()
   try {
     return await db.post.create({ data: post })

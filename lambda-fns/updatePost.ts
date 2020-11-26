@@ -1,7 +1,8 @@
+import { getDB } from './db'
 import Post from './Post'
-import { db } from './db'
 
 async function updatePost(post: Post) {
+  const db = await getDB()
   try {
     const { id, ...rest } = post
     return await db.post.update({ where: { id }, data: rest })

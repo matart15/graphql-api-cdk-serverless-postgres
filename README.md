@@ -42,8 +42,7 @@ cd ..
 ```json
 {
   "region": "us-east-1",
-  "accountID": "123456789012",
-  "dbURL": ""
+  "accountID": "123456789012"
 }
 ```
 
@@ -75,25 +74,7 @@ create table posts (
 );
 ```
 
-7. Update the `dbURL` parameter in `cdk.context.json` with the one found in Secrets manager
-
-```json
-{
-  "dbURL": "postgresql://postgres:password@aurora-serverless-host:5432/BlogDB?connection_limit=1"
-}
-```
-
-You can retrieve the _HOST_ and _PASSWORD_ from the Secrets manager for this secret in the section below.
-
-![Retrieve the secret from Secrets Manager](retrieve-secret.png)
-
-8. Deploy the stack again to reflect the URL
-
-```
-yarn deploy
-```
-
-8. Testing the API
+7. Testing the API
 
 Next, visit the [AppSync console](https://console.aws.amazon.com/appsync/home) and click on **cdk-blog-appsync-api** to view the dashboard for your API.
 

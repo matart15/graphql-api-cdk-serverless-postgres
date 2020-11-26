@@ -1,6 +1,7 @@
-import { db } from './db'
+import { getDB } from './db'
 
 async function deletePost(postId: string) {
+  const db = await getDB()
   try {
     return await db.post.delete({ where: { id: postId } })
   } catch (err) {

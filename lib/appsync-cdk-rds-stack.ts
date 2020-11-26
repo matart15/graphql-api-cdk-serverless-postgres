@@ -3,6 +3,7 @@ import * as ec2 from '@aws-cdk/aws-ec2'
 import * as appsync from '@aws-cdk/aws-appsync'
 import * as lambda from '@aws-cdk/aws-lambda'
 import * as rds from '@aws-cdk/aws-rds'
+import * as iam from '@aws-cdk/aws-iam'
 
 export class AppsyncCdkRdsStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
@@ -43,21 +44,11 @@ export class AppsyncCdkRdsStack extends cdk.Stack {
       ],
     })
 
-    // Create the required security groups
-    const publicSg = new ec2.SecurityGroup(this, 'public-sg', {
-      vpc,
-      securityGroupName: 'public-sg',
-    })
-
+    // Create the required security group
     const privateSg = new ec2.SecurityGroup(this, 'private-sg', {
       vpc,
       securityGroupName: 'private-sg',
     })
-    privateSg.addIngressRule(
-      publicSg,
-      ec2.Port.allTraffic(),
-      'allow access to all private resources'
-    )
     privateSg.addIngressRule(
       privateSg,
       ec2.Port.allTraffic(),
@@ -73,9 +64,10 @@ export class AppsyncCdkRdsStack extends cdk.Stack {
       description: 'An all private subnets group for the DB',
     })
 
-    // Create the Serverless Aurora DB cluster; set the engine to Postgres
+    // Create the Serverless Aurora DB cluster
     const cluster = new rds.ServerlessCluster(this, 'AuroraBlogCluster', {
       engine: rds.DatabaseClusterEngine.AURORA_POSTGRESQL,
+      // Set the engine to Postgres
       parameterGroup: rds.ParameterGroup.fromParameterGroupName(
         this,
         'ParameterGroup',
@@ -98,14 +90,33 @@ export class AppsyncCdkRdsStack extends cdk.Stack {
       code: new lambda.AssetCode('lambda-fns'),
       handler: 'index.handler',
       memorySize: 1024,
-      timeout: cdk.Duration.seconds(5),
+      timeout: cdk.Duration.seconds(10),
       environment: {
-        DB_URL: this.node.tryGetContext('dbURL') || '',
-        // AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
+        SECRET_ID: cluster.secret?.secretArn || '',
+        AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
       },
     })
+
+    // Grant access to Secrets manager to fetch the secret
+    postFn.addToRolePolicy(
+      new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        actions: ['secretsmanager:GetSecretValue'],
+        resources: [cluster.secret?.secretArn || ''],
+      })
+    )
+
+    new ec2.InterfaceVpcEndpoint(this, 'secrets-manager', {
+      service: ec2.InterfaceVpcEndpointAwsService.SECRETS_MANAGER,
+      vpc,
+      privateDnsEnabled: true,
+      subnets: { subnetType: ec2.SubnetType.ISOLATED },
+      securityGroups: [privateSg],
+    })
+
     // Grant access to the cluster from the Lambda function
     // cluster.grantDataApiAccess(postFn)
+
     // Set the new Lambda function as a data source for the AppSync API
     const lambdaDs = api.addLambdaDataSource('lambdaDatasource', postFn)
 
@@ -115,9 +126,6 @@ export class AppsyncCdkRdsStack extends cdk.Stack {
     }
 
     // CFN Outputs
-    new cdk.CfnOutput(this, 'ClusterHost', {
-      value: cluster.clusterEndpoint.hostname,
-    })
     new cdk.CfnOutput(this, 'AppSyncAPIURL', {
       value: api.graphqlUrl,
     })
