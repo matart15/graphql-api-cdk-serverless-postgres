@@ -10,9 +10,9 @@
     "test": "jest",
     "cdk": "cdk",
     "prediff": "yarn build",
-    "diff": "yarn cdk diff --profile prisma_demo",
+    "diff": "yarn cdk diff",
     "predeploy": "yarn build",
-    "deploy": "yarn cdk deploy -O ./cdk-exports.json --profile prisma_demo"
+    "deploy": "yarn cdk deploy -O ./cdk-exports.json"
   },
   "devDependencies": {
     "@aws-cdk/assert": "1.74.0",
