@@ -16,20 +16,20 @@ This CDK stack deploys a real-time GraphQL API built with AWS AppSync, Amazon Au
 
 To deploy this project, follow these steps.
 
-1. Clone the project
+**1. Clone the project**
 
 ```sh
 git clone https://github.com/ryands17/graphql-api-cdk-serverless-postgres.git
 ```
 
-2. Change into the new directory and install dependencies
+**2. Change into the new directory and install dependencies**
 
 ```sh
 cd graphql-api-cdk-serverless-postgres
 yarn
 ```
 
-3. Change into the **lambda-fns** directory and install the dependencies for the Lambda function package:
+**3. Change into the _lambda-fns_ directory and install the dependencies for the Lambda function package:**
 
 ```sh
 cd lambda-fns
@@ -37,7 +37,7 @@ yarn
 cd ..
 ```
 
-4. Initialize `cdk.context.json` in the root directory with the following values (The account ID should match the one you're deploying to)
+**4. Initialize `cdk.context.json` in the root directory with the following values (The account ID should match the one you're deploying to)**
 
 ```json
 {
@@ -46,21 +46,21 @@ cd ..
 }
 ```
 
-5. Deploy the stack
+**5. Deploy the stack**
 
-\***\*Note\*\***: I have deployed using an AWS Profile named `default`. To use your own profile, add the `profile` option after the deploy command like this:
+__*Note*__: I have deployed using an AWS Profile named `default`. To use your own profile, add the `profile` option after the deploy command like this:
 
 ```
 yarn deploy --profile profile_name
 ```
 
-Learn more about how to create an AWS profile [here(https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html).
+Learn more about how to create an AWS profile [here](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html).
 
 ```sh
 yarn deploy
 ```
 
-6. Create the posts table
+**6. Create the posts table**
 
 Visit the [RDS dashboard](https://console.aws.amazon.com/rds/home) and click on **Query Editor**. From the dropdown menu, choose the database (it should begin with **appsynccdkrdsstack-aurorablogcluster**).
 
@@ -80,7 +80,7 @@ create table posts (
 );
 ```
 
-7. Testing the API
+**7. Testing the API**
 
 Next, visit the [AppSync console](https://console.aws.amazon.com/appsync/home) and click on **cdk-blog-appsync-api** to view the dashboard for your API.
 
