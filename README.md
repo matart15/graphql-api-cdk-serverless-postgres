@@ -1,4 +1,6 @@
-# CDK API with GraphQL and Aurora Serverless PostgreSQL
+# CDK API with GraphQL and Aurora Serverless PostgreSQL and Prisma
+
+This is a fork of a repo which was [livestreamed](https://youtu.be/pXd9BCwpjhA) by [Nader Dabit](https://twitter.com/dabit3) that is modified to use [Prisma](https://www.prisma.io/).
 
 ## Note: This stack will not come under the free tier. To delete all resources after you're done, use the following command:
 
@@ -48,7 +50,7 @@ cd ..
 
 **5. Deploy the stack**
 
-__*Note*__: I have deployed using an AWS Profile named `default`. To use your own profile, add the `profile` option after the deploy command like this:
+**_Note_**: I have deployed using an AWS Profile named `default`. To use your own profile, add the `profile` option after the deploy command like this:
 
 ```
 yarn deploy --profile profile_name
