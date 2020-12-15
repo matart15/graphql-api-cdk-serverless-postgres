@@ -2,7 +2,9 @@
 
 This is a fork of a repo which was [livestreamed](https://youtu.be/pXd9BCwpjhA) by [Nader Dabit](https://twitter.com/dabit3) that is modified to use [Prisma](https://www.prisma.io/).
 
-## Note: This stack will not come under the free tier. To delete all resources after you're done, use the following command:
+## Warning: The stack is not free
+
+This stack will not come under the free tier. To delete all resources after you're done, use the following command:
 
 ```sh
 yarn cdk destroy --profile profileName
