@@ -12,7 +12,7 @@ Where the `profileName` is your AWS profile name. I have used `prisma_demo` here
 
 This CDK stack deploys a real-time GraphQL API built with AWS AppSync, Amazon Aurora Serverless PostgreSQL, AWS Lambda, and [Prisma](https://www.prisma.io/).
 
-![CDK API with GraphQL and Aurora Serverless PostgreSQL](header.jpg)
+![CDK API with GraphQL, Aurora Serverless PostgreSQL, and Prisma](header.png)
 
 ## Getting started
 
