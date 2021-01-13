@@ -46,7 +46,8 @@ cd ..
 ```json
 {
   "region": "us-east-1",
-  "accountID": "123456789012"
+  "accountID": "123456789012",
+  "keyName": "sshKeyName"
 }
 ```
 

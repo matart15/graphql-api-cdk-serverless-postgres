@@ -56,43 +56,43 @@ export class AppsyncCdkRdsStack extends cdk.Stack {
     )
 
     // Fetch the latest Ubuntu AMI
-    // const ami = new ec2.LookupMachineImage({
-    //   name: 'ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*',
-    //   filters: { 'virtualization-type': ['hvm'] },
-    //   // Canonical AWS Account ID
-    //   owners: ['099720109477'],
-    // })
+    const ami = new ec2.LookupMachineImage({
+      name: 'ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*',
+      filters: { 'virtualization-type': ['hvm'] },
+      // Canonical AWS Account ID
+      owners: ['099720109477'],
+    })
 
     // EC2 instance and public Security Group
-    // const publicSg = new ec2.SecurityGroup(this, 'public-sg', {
-    //   vpc,
-    //   securityGroupName: 'public-sg',
-    // })
-    // publicSg.addIngressRule(
-    //   ec2.Peer.anyIpv4(),
-    //   ec2.Port.tcp(22),
-    //   'allow SSH access'
-    // )
+    const publicSg = new ec2.SecurityGroup(this, 'public-sg', {
+      vpc,
+      securityGroupName: 'public-sg',
+    })
+    publicSg.addIngressRule(
+      ec2.Peer.anyIpv4(),
+      ec2.Port.tcp(22),
+      'allow SSH access'
+    )
 
-    // privateSg.addIngressRule(
-    //   publicSg,
-    //   ec2.Port.tcp(5432),
-    //   'allow Aurora Serverless Postgres access'
-    // )
+    privateSg.addIngressRule(
+      publicSg,
+      ec2.Port.tcp(5432),
+      'allow Aurora Serverless Postgres access'
+    )
 
-    // new ec2.Instance(this, 'jump-box', {
-    //   vpc,
-    //   securityGroup: publicSg,
-    //   vpcSubnets: { subnetType: ec2.SubnetType.PUBLIC },
-    //   instanceType: ec2.InstanceType.of(
-    //     ec2.InstanceClass.T2,
-    //     ec2.InstanceSize.MICRO
-    //   ),
-    //   machineImage: ec2.MachineImage.genericLinux({
-    //     [this.region]: ami.getImage(this).imageId,
-    //   }),
-    //   keyName: this.node.tryGetContext('keyName'),
-    // })
+    new ec2.Instance(this, 'jump-box', {
+      vpc,
+      securityGroup: publicSg,
+      vpcSubnets: { subnetType: ec2.SubnetType.PUBLIC },
+      instanceType: ec2.InstanceType.of(
+        ec2.InstanceClass.T2,
+        ec2.InstanceSize.MICRO
+      ),
+      machineImage: ec2.MachineImage.genericLinux({
+        [this.region]: ami.getImage(this).imageId,
+      }),
+      keyName: this.node.tryGetContext('keyName'),
+    })
 
     // RDS Subnet Group
     const subnetGroup = new rds.SubnetGroup(this, 'rds-subnet-group', {

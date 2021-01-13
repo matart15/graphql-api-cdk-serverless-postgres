@@ -16,7 +16,12 @@ export const getDB = async () => {
   const secretString = JSON.parse(dbURL.SecretString || '{}')
   const url = `postgresql://${secretString.username}:${secretString.password}@${secretString.host}:${secretString.port}/${secretString.dbname}?connection_limit=1`
 
-  db = new PrismaClient({ datasources: { db: { url } } })
+  db = new PrismaClient({
+    datasources: { db: { url } },
+    __internal: {
+      useUds: false,
+    },
+  })
   return db
 }
 
