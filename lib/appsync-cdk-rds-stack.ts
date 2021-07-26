@@ -56,12 +56,12 @@ export class AppsyncCdkRdsStack extends cdk.Stack {
     )
 
     // Fetch the latest Ubuntu AMI
-    const ami = new ec2.LookupMachineImage({
-      name: 'ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*',
-      filters: { 'virtualization-type': ['hvm'] },
-      // Canonical AWS Account ID
-      owners: ['099720109477'],
-    })
+    // const ami = new ec2.LookupMachineImage({
+    //   name: 'ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*',
+    //   filters: { 'virtualization-type': ['hvm'] },
+    //   // Canonical AWS Account ID
+    //   owners: ['099720109477'],
+    // })
 
     // EC2 instance and public Security Group
     // const publicSg = new ec2.SecurityGroup(this, 'public-sg', {
@@ -125,7 +125,7 @@ export class AppsyncCdkRdsStack extends cdk.Stack {
       vpc,
       vpcSubnets: { subnetType: ec2.SubnetType.ISOLATED },
       securityGroups: [privateSg],
-      runtime: lambda.Runtime.NODEJS_12_X,
+      runtime: lambda.Runtime.NODEJS_14_X,
       code: new lambda.AssetCode('lambda-fns'),
       handler: 'index.handler',
       memorySize: 1024,

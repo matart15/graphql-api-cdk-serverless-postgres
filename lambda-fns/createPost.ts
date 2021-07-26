@@ -1,9 +1,10 @@
 import Post from './Post'
-import { getDB, uuidv4 } from './db'
+import * as crypto from 'crypto'
+import { getDB } from './db'
 
 async function createPost(post: Post) {
   const db = await getDB()
-  if (!post.id) post.id = uuidv4()
+  if (!post.id) post.id = crypto.randomUUID()
   try {
     return await db.post.create({ data: post })
   } catch (err) {
