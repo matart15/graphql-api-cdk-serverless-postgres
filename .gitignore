@@ -3,9 +3,13 @@
 *.d.ts
 node_modules
 
+.eslintcache
+
 # CDK asset staging directory
 .cdk.staging
 cdk.out
 
 package-lock.json
 yarn.lock
+
+*.log

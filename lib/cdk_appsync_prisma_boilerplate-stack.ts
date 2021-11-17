@@ -6,6 +6,7 @@ export class CdkAppsyncPrismaBoilerplateStack extends cdk.Stack {
     super(scope, id, props);
 
     // The code that defines your stack goes here
+    console.log('useful const');
 
     // example resource
     // const queue = new sqs.Queue(this, 'CdkAppsyncPrismaBoilerplateQueue', {
