@@ -1,5 +1,4 @@
 {
-  "extends": "./tsconfig.path.json",
   "ts-node": {
     "compilerOptions": {
       "module": "commonjs"
@@ -7,6 +6,12 @@
     "exclude": []
   },
   "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@lib/*": [
+        "./lib/*"
+      ]
+    },
     "target": "es2018",
     "module": "commonjs",
     "lib": [
@@ -15,6 +20,9 @@
     // "allowJs": true,
     // "outDir": "build",
     // "rootDir": "./",
+    // "declaration": true,
+    // "inlineSourceMap": true,
+    // "inlineSources": true,
     "noImplicitAny": false,
     "strictNullChecks": true,
     "strictFunctionTypes": true,
@@ -44,6 +52,7 @@
   "exclude": [
     "node_modules",
     "cdk.out",
+    "src",
     "test"
   ]
 }

@@ -1,0 +1,12 @@
+type User {
+  id:   Int    
+  uuid: String
+}
+
+type Query {
+  listUsers: [User!]!
+}
+
+type Mutation {
+  createUser(uuid: String!): User!
+}

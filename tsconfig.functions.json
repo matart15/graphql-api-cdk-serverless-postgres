@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "lib": [
+      "es2018",
+      "esnext.asynciterable"
+    ],
+    "baseUrl": "./src",
+    "outDir": "./build",
+    "paths": {
+      "@shared_libs/*": [
+        "./lambda-layers-libs/nodejs/node_modules/@shared_libs/*"
+      ],
+    },
+    "target": "es2018",
+    "module": "commonjs",
+    "sourceMap": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "noUnusedLocals": true,
+    "noImplicitAny": true
+  },
+  "include": [
+    "src/lambda-layers-libs/nodejs/node_modules/@shared_libs",
+    "./src"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
