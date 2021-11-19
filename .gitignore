@@ -1,6 +1,8 @@
 !jest.config.js
 *.d.ts
-node_modules
+node_modules/*
+!src/lambda-layers-libs/nodejs/node_modules/@shared_libs/
+!src/lambda-layers-libs/nodejs/node_modules/@shared_libs/createPrismaClient.ts
 
 .eslintcache
 
@@ -15,5 +17,5 @@ yarn.lock
 
 *.log
 
-bin/*.js
-lib/*.js
+bin/**/*.js
+lib/**/*.js
