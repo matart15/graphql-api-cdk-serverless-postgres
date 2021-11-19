@@ -13,9 +13,6 @@
     "fix": "eslint --quiet --fix ./",
     "watch": "tsc -w"
   },
-  "lint-staged": {
-    "*.ts": "eslint --cache --fix"
-  },
   "dependencies": {
     "@aws-cdk/aws-appsync": "^1.115.0",
     "@aws-cdk/aws-ec2": "^1.115.0",
