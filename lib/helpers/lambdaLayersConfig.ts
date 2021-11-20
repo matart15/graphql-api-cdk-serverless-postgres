@@ -1,26 +1,64 @@
 import fs from 'fs-extra';
+import glob from 'glob';
+import path from 'path';
 
 export const lambdaLayersConfig = {
-  'lambda-layer-libs': {
-    assetPath: 'build/lambda-layers-libs',
-    description: 'shared codes for lambda',
+  createPrismaClient: {
+    assetPath: 'build/create_prisma_client',
+    description: 'creates prisma client',
   },
-  'lambda-layers-prisma-client': {
+  prismaLibrary: {
     prepare: async () => {
-      await fs.remove('lambda-layers-prisma-client');
-      await fs.copy(
-        'node_modules/.prisma/client',
-        'lambda-layers-prisma-client/nodejs/node_modules/.prisma/client',
+      fs.removeSync('database/lambda-layers-prisma-client');
+      fs.copySync(
+        'database/node_modules/.prisma/client',
+        'database/lambda-layers-prisma-client/nodejs/node_modules/.prisma/client',
         { dereference: true },
       );
-      await fs.copy(
-        'node_modules/@prisma',
-        'lambda-layers-prisma-client/nodejs/node_modules/@prisma',
+      fs.copySync(
+        'database/node_modules/@prisma',
+        'database/lambda-layers-prisma-client/nodejs/node_modules/@prisma',
         { dereference: true },
       );
+      glob
+        .sync('database/node_modules/.prisma/client/libquery_engine-rhel-*')
+        .forEach(async (file) => {
+          const filename = path.basename(file);
+          fs.copySync(file, '/tmp/' + filename);
+        });
+      glob
+        .sync(
+          'database/lambda-layers-prisma-client/nodejs/node_modules/.prisma/client/libquery_engine-*',
+        )
+        .forEach(async (file) => {
+          fs.removeSync(file);
+        });
+      glob
+        .sync(
+          'database/lambda-layers-prisma-client/nodejs/node_modules/prisma/libquery_engine-*',
+        )
+        .forEach(async (file) => {
+          fs.removeSync(file);
+        });
+
+      fs.removeSync(
+        'database/lambda-layers-prisma-client/nodejs/node_modules/@prisma/engines',
+      );
+      glob.sync('/tmp/libquery_engine-rhel-*').forEach(async (file) => {
+        const filename = path.basename(file);
+        fs.copySync(
+          file,
+          'database/lambda-layers-prisma-client/nodejs/node_modules/.prisma/client/' +
+            filename,
+        );
+      });
     },
-    assetPath: 'lambda-layers-prisma-client',
-    destroy: async () => {},
-    description: 'shared prisma client',
+    assetPath: 'database/lambda-layers-prisma-client',
+    // destroy: async () => {},
+    description: '3rd party prisma client',
+  },
+  externalLibraries: {
+    assetPath: 'external_libraries',
+    description: '3rd party shared external libraires',
   },
 };

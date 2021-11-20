@@ -1,9 +1,10 @@
 import { createPrismaClient } from '@shared_libs/createPrismaClient';
 import { v4 as uuidv4 } from 'uuid';
 
-export const handler = async (): Promise<void> => {
+export const handler = async (): Promise<any> => {
+  console.log('process.env', process.env);
   const prisma = createPrismaClient();
-
+  const createdUser = null;
   try {
     await prisma.user.create({
       data: { uuid: uuidv4() },
@@ -13,4 +14,5 @@ export const handler = async (): Promise<void> => {
   }
 
   prisma.$disconnect();
+  return createdUser;
 };

@@ -7,8 +7,11 @@
     "baseUrl": "./src",
     "outDir": "./build",
     "paths": {
+      "@prisma/*": [
+        "../database/node_modules/@prisma/*"
+      ],
       "@shared_libs/*": [
-        "./lambda-layers-libs/nodejs/node_modules/@shared_libs/*"
+        "./create_prisma_client/nodejs/node_modules/@shared_libs/*"
       ],
     },
     "target": "es2018",
@@ -22,10 +25,8 @@
     "noImplicitAny": true
   },
   "include": [
-    "src/lambda-layers-libs/nodejs/node_modules/@shared_libs",
+    "src/create_prisma_client/nodejs/node_modules/@shared_libs",
+    "src/external_libraries/nodejs/node_modules/**/*",
     "./src"
-  ],
-  "exclude": [
-    "node_modules"
   ]
 }

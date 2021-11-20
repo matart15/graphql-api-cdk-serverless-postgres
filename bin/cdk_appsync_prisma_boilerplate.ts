@@ -11,9 +11,9 @@ import {
 const main = async () => {
   const app = new cdk.App();
 
-            await prepareStack();
-            await createStack(app);
-            await clearDeployment();
+  await prepareStack();
+  await createStack(app);
+  await clearDeployment();
 
   // new CdkAppsyncPrismaBoilerplateStack(
   //   app,

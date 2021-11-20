@@ -5,7 +5,7 @@
     "cdk_appsync_prisma_boilerplate": "bin/cdk_appsync_prisma_boilerplate.js"
   },
   "scripts": {
-    "build-cdk": "tsc -p tsconfig.json",
+    "build-cdk": "cd database && rm -rf node_modules && yarn install --production && prisma generate && cd - && yarn tsc -p tsconfig.json",
     "build-functions": "tsc -p tsconfig.functions.json",
     "cdk": "cdk",
     "prepare": "husky install",
@@ -20,15 +20,16 @@
     "@aws-cdk/aws-lambda": "^1.115.0",
     "@aws-cdk/aws-rds": "^1.115.0",
     "@aws-cdk/core": "1.132.0",
+    "@types/glob": "7.2.0",
     "fs-extra": "10.0.0",
+    "glob": "7.2.0",
     "module-alias": "2.2.2",
-    "source-map-support": "0.5.20",
-    "uuid": "8.3.2"
+    "prisma": "3.5.0",
+    "source-map-support": "0.5.20"
   },
   "devDependencies": {
     "@aws-cdk/assertions": "1.132.0",
     "@babel/eslint-parser": "7.16.3",
-    "@prisma/client": "3.5.0",
     "@types/jest": "27.0.2",
     "@types/node": "16.11.7",
     "@types/uuid": "8.3.1",
@@ -47,7 +48,6 @@
     "jest": "27.3.1",
     "lint-staged": "12.0.2",
     "prettier": "2.4.1",
-    "prisma": "3.5.0",
     "ts-jest": "27.0.7",
     "ts-node": "10.4.0",
     "tslint": "6.1.3",

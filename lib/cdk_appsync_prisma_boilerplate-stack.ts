@@ -5,6 +5,7 @@ import * as lambda from '@aws-cdk/aws-lambda';
 import * as rds from '@aws-cdk/aws-rds';
 import * as iam from '@aws-cdk/aws-iam';
 import { lambdaLayersConfig } from './helpers/lambdaLayersConfig';
+// import { CfnInternetGateway, CfnVPCGatewayAttachment } from '@aws-cdk/aws-ec2';
 
 const resolvers = [
   { typeName: 'Query', fieldName: 'listUsers' },
@@ -83,7 +84,7 @@ class CdkAppsyncPrismaBoilerplateStack extends cdk.Stack {
       service: ec2.InterfaceVpcEndpointAwsService.SECRETS_MANAGER,
       vpc,
       privateDnsEnabled: true,
-      subnets: { subnetType: ec2.SubnetType.PRIVATE_ISOLATED },
+      subnets: { subnetType: ec2.SubnetType.PRIVATE },
       securityGroups: [privateSg],
     });
 
@@ -91,7 +92,7 @@ class CdkAppsyncPrismaBoilerplateStack extends cdk.Stack {
     for (const { typeName, fieldName } of resolvers) {
       const postFn = new lambda.Function(this, fieldName, {
         vpc,
-        vpcSubnets: { subnetType: ec2.SubnetType.PRIVATE_ISOLATED },
+        vpcSubnets: { subnetType: ec2.SubnetType.PRIVATE_WITH_NAT },
         securityGroups: [privateSg],
         runtime: lambda.Runtime.NODEJS_14_X,
         layers: lambdaLayers,
@@ -102,6 +103,8 @@ class CdkAppsyncPrismaBoilerplateStack extends cdk.Stack {
         environment: {
           // SECRET_ID: cluster.secret?.secretArn || '',
           AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
+          DATABASE_URL:
+            'mysql://goldware:gd0xzjnbwj5040ct@sales-circle-extra-do-user-6343648-0.b.db.ondigitalocean.com:25060/cronjobs',
         },
       });
 
@@ -157,9 +160,9 @@ class CdkAppsyncPrismaBoilerplateStack extends cdk.Stack {
 
   private CreateVpcAndSecurityGroup() {
     const vpc = new ec2.Vpc(this, 'BlogAppVPC', {
-      cidr: '10.0.0.0/20',
-      natGateways: 0,
-      maxAzs: 2,
+      cidr: '100.0.0.0/16',
+      natGateways: 1,
+      maxAzs: 1,
       enableDnsHostnames: true,
       enableDnsSupport: true,
       subnetConfiguration: [
@@ -171,15 +174,20 @@ class CdkAppsyncPrismaBoilerplateStack extends cdk.Stack {
         {
           cidrMask: 22,
           name: 'private',
-          subnetType: ec2.SubnetType.ISOLATED,
+          subnetType: ec2.SubnetType.PRIVATE_WITH_NAT,
         },
       ],
     });
+    // const igw = new CfnInternetGateway(this, 'InternetGateway');
+    // new CfnVPCGatewayAttachment(this, 'VpcGatewayAttachment', {
+    //   vpcId: vpc.vpcId,
+    //   internetGatewayId: igw.ref,
+    // });
 
     // Create the required security group
-    const privateSg = new ec2.SecurityGroup(this, 'private-sg', {
+    const privateSg = new ec2.SecurityGroup(this, 'private-sg-1', {
       vpc,
-      securityGroupName: 'private-sg',
+      securityGroupName: 'private-sg-1',
     });
     privateSg.addIngressRule(
       privateSg,

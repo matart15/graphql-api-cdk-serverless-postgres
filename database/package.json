@@ -1,0 +1,10 @@
+{
+  "name": "cdk_appsync_prisma_boilerplate",
+  "version": "0.1.0",
+  "dependencies": {
+    "@prisma/client": "3.5.0"
+  },
+  "devDependencies": {
+    "prisma": "3.5.0"
+  }
+}

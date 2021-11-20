@@ -62,7 +62,7 @@ module.exports = {
           'no-duplicate-imports': true,
           'no-duplicate-variable': [true, 'check-parameters'],
           'no-floating-promises': true,
-          'no-implicit-dependencies': [true, ['@shared_libs']],
+          'no-implicit-dependencies': [true, ['@shared_libs', '@prisma']],
           // 'no-import-side-effect': true,
           'no-shadowed-variable': true,
           'no-void-expression': [true, 'ignore-arrow-function-shorthand'],
