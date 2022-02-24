@@ -43,12 +43,8 @@ cd ..
 
 **4. Initialize `cdk.context.json` in the root directory with the following values (The account ID should match the one you're deploying to)**
 
-```json
-{
-  "region": "us-east-1",
-  "accountID": "123456789012",
-  "keyName": "sshKeyName"
-}
+```sh
+cp cdk.context.json_sample cdk.context.json
 ```
 
 **5. Deploy the stack**

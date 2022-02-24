@@ -1,4 +1,4 @@
-type Post {
+type Post @aws_api_key @aws_cognito_user_pools {
   id: String!
   title: String!
   content: String!
@@ -17,14 +17,14 @@ input UpdatePostInput {
 }
 
 type Query {
-  listPosts: [Post]
-  getPostById(postId: String!): Post
+  listPosts: [Post] @aws_api_key @aws_cognito_user_pools
+  getPostById(postId: String!): Post @aws_api_key @aws_cognito_user_pools
 }
 
 type Mutation {
-  createPost(post: CreatePostInput!): Post
-  deletePost(postId: String!): Post
-  updatePost(post: UpdatePostInput!): Post
+  createPost(post: CreatePostInput!): Post @aws_cognito_user_pools(cognito_groups: ["Admin"])
+  deletePost(postId: String!): Post @aws_cognito_user_pools(cognito_groups: ["Admin"])
+  updatePost(post: UpdatePostInput!): Post @aws_cognito_user_pools(cognito_groups: ["Admin"])
 }
 
 type Subscription {

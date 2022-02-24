@@ -12,7 +12,7 @@
     "prediff": "yarn build",
     "diff": "yarn cdk diff",
     "predeploy": "yarn build",
-    "deploy": "yarn cdk deploy -O ./cdk-exports.json"
+    "deploy": "yarn cdk deploy --all -O ./cdk-exports.json --profile salescircle"
   },
   "devDependencies": {
     "@aws-cdk/assert": "1.115.0",
