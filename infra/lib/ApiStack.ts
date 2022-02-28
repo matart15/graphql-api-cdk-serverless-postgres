@@ -50,7 +50,7 @@ export class ApiStack extends cdk.Stack {
       vpcSubnets: { subnetType: ec2.SubnetType.ISOLATED },
       securityGroups: [privateSg],
       runtime: lambda.Runtime.NODEJS_14_X,
-      code: new lambda.AssetCode('lambda-fns'),
+      code: new lambda.AssetCode('../lambda-fns'),
       handler: 'index.handler',
       memorySize: 1024,
       timeout: cdk.Duration.seconds(10),
