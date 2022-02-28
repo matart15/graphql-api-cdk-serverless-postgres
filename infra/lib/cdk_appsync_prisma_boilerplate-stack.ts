@@ -5,6 +5,7 @@ import * as lambda from '@aws-cdk/aws-lambda';
 import * as rds from '@aws-cdk/aws-rds';
 import * as iam from '@aws-cdk/aws-iam';
 import { lambdaLayersConfig } from './helpers/lambdaLayersConfig';
+import * as cognito from '@aws-cdk/aws-cognito';
 // import { CfnInternetGateway, CfnVPCGatewayAttachment } from '@aws-cdk/aws-ec2';
 
 const resolvers = [
@@ -18,6 +19,10 @@ const resolvers = [
 class CdkAppsyncPrismaBoilerplateStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
+
+    const userPool = this.createCognitoUserPool();
+    const userPoolClient = this.createCognitoUserPoolClient(userPool);
+ 
 
     // Create the AppSync API
     const api = this.CreateAppSync();
@@ -40,7 +45,13 @@ class CdkAppsyncPrismaBoilerplateStack extends cdk.Stack {
       api,
     });
 
-    // CFN Outputs
+    // 👇 Outputs
+    new cdk.CfnOutput(this, 'userPoolId', {
+      value: userPool.userPoolId,
+    });
+    new cdk.CfnOutput(this, 'userPoolClientId', {
+      value: userPoolClient.userPoolClientId,
+    });
     new cdk.CfnOutput(this, 'AppSyncAPIURL', {
       value: api.graphqlUrl,
     });
@@ -48,6 +59,100 @@ class CdkAppsyncPrismaBoilerplateStack extends cdk.Stack {
       value: api.apiKey || '',
     });
   }
+
+
+  private createCognitoUserPool() {
+    // 👇 User Pool
+    const userPool = new cognito.UserPool(this, 'userpool', {
+      userPoolName: 'my-user-pool',
+      selfSignUpEnabled: true,
+      signInAliases: {
+        email: true,
+      },
+      autoVerify: {
+        email: true,
+      },
+      standardAttributes: {
+        givenName: {
+          required: true,
+          mutable: true,
+        },
+        familyName: {
+          required: true,
+          mutable: true,
+        },
+      },
+      customAttributes: {
+        country: new cognito.StringAttribute({ mutable: true }),
+        city: new cognito.StringAttribute({ mutable: true }),
+        isAdmin: new cognito.StringAttribute({ mutable: true }),
+      },
+      passwordPolicy: {
+        minLength: 6,
+        requireLowercase: true,
+        requireDigits: true,
+        requireUppercase: false,
+        requireSymbols: false,
+      },
+      accountRecovery: cognito.AccountRecovery.EMAIL_ONLY,
+      removalPolicy: cdk.RemovalPolicy.RETAIN,
+    });
+    return userPool;
+  }
+
+  private createCognitoUserPoolClient(userPool: cognito.UserPool) {
+    // 👇 User Pool Client attributes
+    const standardCognitoAttributes = {
+      givenName: true,
+      familyName: true,
+      email: true,
+      emailVerified: true,
+      address: true,
+      birthdate: true,
+      gender: true,
+      locale: true,
+      middleName: true,
+      fullname: true,
+      nickname: true,
+      phoneNumber: true,
+      phoneNumberVerified: true,
+      profilePicture: true,
+      preferredUsername: true,
+      profilePage: true,
+      timezone: true,
+      lastUpdateTime: true,
+      website: true,
+    };
+
+    const clientReadAttributes = new cognito.ClientAttributes()
+      .withStandardAttributes(standardCognitoAttributes)
+      .withCustomAttributes(...['country', 'city', 'isAdmin']);
+
+    const clientWriteAttributes = new cognito.ClientAttributes()
+      .withStandardAttributes({
+        ...standardCognitoAttributes,
+        emailVerified: false,
+        phoneNumberVerified: false,
+      })
+      .withCustomAttributes(...['country', 'city']);
+
+    // // 👇 User Pool Client
+    const userPoolClient = new cognito.UserPoolClient(this, 'userpool-client', {
+      userPool,
+      authFlows: {
+        adminUserPassword: true,
+        custom: true,
+        userSrp: true,
+      },
+      supportedIdentityProviders: [
+        cognito.UserPoolClientIdentityProvider.COGNITO,
+      ],
+      readAttributes: clientReadAttributes,
+      writeAttributes: clientWriteAttributes,
+    });
+    return userPoolClient;
+  }
+
 
   private createLambdaLayers() {
     const lambdaLayers: lambda.LayerVersion[] = [];
@@ -96,7 +201,7 @@ class CdkAppsyncPrismaBoilerplateStack extends cdk.Stack {
         securityGroups: [privateSg],
         runtime: lambda.Runtime.NODEJS_14_X,
         layers: lambdaLayers,
-        code: new lambda.AssetCode(`build/lambdas/${fieldName}`),
+        code: new lambda.AssetCode(`../build/lambdas/${fieldName}`),
         handler: 'index.handler',
         memorySize: 1024,
         timeout: cdk.Duration.seconds(10),
@@ -159,7 +264,7 @@ class CdkAppsyncPrismaBoilerplateStack extends cdk.Stack {
   // }
 
   private CreateVpcAndSecurityGroup() {
-    const vpc = new ec2.Vpc(this, 'BlogAppVPC', {
+    const vpc = new ec2.Vpc(this, 'CdkVPC', {
       cidr: '100.0.0.0/16',
       natGateways: 1,
       maxAzs: 1,
@@ -200,7 +305,7 @@ class CdkAppsyncPrismaBoilerplateStack extends cdk.Stack {
   private CreateAppSync() {
     return new appsync.GraphqlApi(this, 'Api', {
       name: 'cdk-blog-appsync-api',
-      schema: appsync.Schema.fromAsset('graphql/schema.graphql'),
+      schema: appsync.Schema.fromAsset('../api/graphql/schema.graphql'),
       authorizationConfig: {
         defaultAuthorization: {
           authorizationType: appsync.AuthorizationType.API_KEY,
@@ -265,11 +370,11 @@ export const prepareStack = async () => {
   }
 };
 
-export const createStack = async (app: cdk.App) => {
+export const createStack = async ({app,mainStackName}: {app: cdk.App, mainStackName:string}) => {
   console.log('createStack ...');
   return new CdkAppsyncPrismaBoilerplateStack(
     app,
-    'CdkAppsyncPrismaBoilerplateStack',
+    mainStackName,
     {
       /* If you don't specify 'env', this stack will be environment-agnostic.
        * Account/Region-dependent features and context lookups will not work,

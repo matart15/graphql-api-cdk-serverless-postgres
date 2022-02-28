@@ -1,0 +1,23 @@
+enum UserType {
+    USER_TYPE_ADMIN
+    USER_TYPE_USER
+}
+
+type Post {
+  id: ID!
+  owner: User!
+}
+
+type User {
+  id:   Int    
+  uuid: String
+  posts: [Post!]!
+}
+
+type Query {
+  listUsers(name: String!, age: Int): [User!]!
+}
+
+type Mutation {
+  createUser(uuid: String!): User!
+}

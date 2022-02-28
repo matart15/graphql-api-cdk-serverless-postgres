@@ -1,0 +1,30 @@
+{
+  "name": "cdk_appsync_prisma_boilerplate",
+  "version": "0.1.0",
+  "bin": {
+    "cdk_appsync_prisma_boilerplate": "bin/cdk_appsync_prisma_boilerplate.js"
+  },
+  "scripts": {
+    "cdk": "cdk",
+    "test": "jest",
+    "fix": "eslint --quiet --fix ./",
+    "watch": "tsc -w"
+  },
+  "dependencies": {
+    "@aws-cdk/aws-appsync": "1.133.0",
+    "@aws-cdk/aws-ec2": "1.133.0",
+    "@aws-cdk/aws-iam": "1.133.0",
+    "@aws-cdk/aws-lambda": "1.133.0",
+    "@aws-cdk/aws-rds": "1.133.0",
+    "@aws-cdk/core": "1.133.0",
+    "@types/glob": "7.2.0",
+    "fs-extra": "10.0.0",
+    "glob": "7.2.0",
+    "module-alias": "2.2.2",
+    "prisma": "3.5.0",
+    "source-map-support": "0.5.21"
+  },
+  "_moduleAliases": {
+    "@lib": "lib"
+  }
+}

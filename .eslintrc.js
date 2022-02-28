@@ -1,3 +1,16 @@
+const tslintConfigRules = {
+  deprecation: true,
+  'no-duplicate-imports': true,
+  'no-duplicate-variable': [true, 'check-parameters'],
+  'no-floating-promises': true,
+  'no-implicit-dependencies': [true, ['@lib']],
+  // 'no-import-side-effect': true,
+  'no-shadowed-variable': true,
+  'no-void-expression': [true, 'ignore-arrow-function-shorthand'],
+  'trailing-comma': true,
+  'triple-equals': true,
+};
+
 module.exports = {
   root: true,
   parser: '@typescript-eslint/parser',
@@ -56,19 +69,24 @@ module.exports = {
     '@typescript-eslint/tslint/config': [
       'error',
       {
-        rules: {
-          deprecation: true,
-          'no-duplicate-imports': true,
-          'no-duplicate-variable': [true, 'check-parameters'],
-          'no-floating-promises': true,
-          'no-implicit-dependencies': [true, ['@lib']],
-          // 'no-import-side-effect': true,
-          'no-shadowed-variable': true,
-          'no-void-expression': [true, 'ignore-arrow-function-shorthand'],
-          'trailing-comma': true,
-          'triple-equals': true,
-        },
+        rules: tslintConfigRules,
       },
     ],
   },
+  overrides: [
+    {
+      files: ['cli.ts', 'subcommans'],
+      rules: {
+        '@typescript-eslint/tslint/config': [
+          'error',
+          {
+            rules: {
+              ...tslintConfigRules,
+              'no-implicit-dependencies': false,
+            },
+          },
+        ],
+      },
+    },
+  ],
 };

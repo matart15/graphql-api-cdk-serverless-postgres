@@ -1,14 +1,9 @@
-!jest.config.js
 *.d.ts
 node_modules/*
 !src/create_prisma_client/nodejs/node_modules/@shared_libs/
 !src/create_prisma_client/nodejs/node_modules/@shared_libs/createPrismaClient.ts
 
 .eslintcache
-
-# CDK asset staging directory
-.cdk.staging
-cdk.out
 
 build
 

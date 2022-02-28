@@ -4,14 +4,17 @@
       "es2018",
       "esnext.asynciterable"
     ],
-    "baseUrl": "./src",
-    "outDir": "./build",
+    "baseUrl": "./",
+    "outDir": "../build",
     "paths": {
       "@prisma/*": [
         "../database/node_modules/@prisma/*"
       ],
       "@shared_libs/*": [
         "./create_prisma_client/nodejs/node_modules/@shared_libs/*"
+      ],
+      "uuid": [
+        "./src/external_libraries/nodejs/node_modules/uuid"
       ],
     },
     "target": "es2018",
@@ -22,11 +25,14 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "noUnusedLocals": true,
-    "noImplicitAny": true
+    "noImplicitAny": true,
+    "typeRoots": [
+      "../node_modules/@types"
+    ]
   },
   "include": [
-    "src/create_prisma_client/nodejs/node_modules/@shared_libs",
-    "src/external_libraries/nodejs/node_modules/**/*",
-    "./src"
+    "create_prisma_client/nodejs/node_modules/@shared_libs",
+    "external_libraries/nodejs/node_modules/**/*",
+    "lambdas"
   ]
 }
